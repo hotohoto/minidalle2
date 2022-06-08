@@ -1,0 +1,15 @@
+name: trainer
+
+entry_points:
+  train_clip:
+    command: "bin/train_clip.sh"
+  train_clip_reset:
+    command: "bin/train_clip.sh --reset"
+  train_prior:
+    command: "bin/train_prior.sh"
+  train_prior_reset:
+    command: "bin/train_prior.sh --reset"
+  train_decoder:
+    command: "bin/train_decoder.sh"
+  train_decoder_reset:
+    command: "bin/train_decoder.sh --reset"

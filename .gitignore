@@ -1,0 +1,13 @@
+.vscode
+__pycache__
+.ipynb_checkpoints
+.pytest_cache
+.python-version
+venv
+*.ipynb
+datasets
+tmp_datasets
+mlruns
+mlartifacts
+mlflow.db
+ngrok_config.yaml

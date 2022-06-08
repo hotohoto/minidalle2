@@ -1,0 +1,45 @@
+{
+    "info": {
+        "start_date": "2008-01-01",
+        "end_date": "2017-12-31",
+        "url": "https://redcaps.xyz",
+        "word_filter": {
+            "num_removed": 5,
+            "model": "LDNOOBW/List-of-Dirty-Naughty-Obscene-and-Otherwise-Bad-Words"
+        },
+        "nsfw_filter": {
+            "num_removed": 0,
+            "model": "gantman/nsfw_model"
+        },
+        "face_filter": {
+            "num_removed": 23,
+            "model": "redcaps-dataset/pytorch-retinaface",
+            "confidence_threshold": 0.9
+        },
+        "version": "1.0"
+    },
+    "annotations": [
+        {
+            "image_id": "bar",
+            "subreddit": "foo",
+            "url": "https://i.imgur.com/DXOdR.jpg",
+            "caption": "my personal abandoned school urban exploration. abandoned due to asbestos and it is pretty much untouched",
+            "raw_caption": "My personal abandoned school urban exploration. Abandoned due to asbestos and it is pretty much untouched (x-posted)",
+            "score": 2,
+            "author": "EntenEller",
+            "created_utc": 1302998814,
+            "permalink": "/r/abandoned/comments/grraj/my_personal_abandoned_school_urban_exploration/"
+        },
+        {
+            "image_id": "baz",
+            "subreddit": "foo",
+            "url": "http://i.imgur.com/nEuSr.jpg",
+            "caption": "my playground near dubrovnik, croatia.",
+            "raw_caption": "My playground near Dubrovnik, Croatia.",
+            "score": 8,
+            "author": "flying-demiurg",
+            "created_utc": 1303318635,
+            "permalink": "/r/abandoned/comments/guli1/my_playground_near_dubrovnik_croatia/"
+        }
+    ]
+}
