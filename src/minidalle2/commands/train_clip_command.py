@@ -3,6 +3,7 @@ import click
 from minidalle2.usecases.model import build_clip
 from minidalle2.usecases.repository import Repository
 from minidalle2.usecases.train_clip import train_clip
+from minidalle2.values.config import ModelType
 from minidalle2.values.trainer_config import TrainerConfig
 
 
@@ -17,16 +18,14 @@ def execute(n_epochs, resume):
     repo = Repository(config=config)
 
     if resume:
-        clip = repo.load_clip()
+        clip = repo.load_model(ModelType.CLIP)
         if not clip:
             clip = build_clip(config)
 
     else:
         clip = build_clip(config)
 
-    train_clip(clip, config)
-
-    repo.save_clip(clip)
+    train_clip(clip, config, repo)
 
     click.echo("Done.")
 

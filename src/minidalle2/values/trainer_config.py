@@ -1,7 +1,8 @@
 import os
+import typing as t
 from pathlib import Path
 
-from minidalle2.values.config import Config, DatasetType
+from minidalle2.values.config import Config, DatasetType, ModelType, Stage
 
 
 class TrainerConfig(Config):
@@ -47,14 +48,14 @@ class TrainerConfig(Config):
         else:
             raise ValueError()
 
-    def get_artifact_url_clip(self):
-        return "mlflow-artifacts:/clip/Staging"
+    def get_model_uri(self, run_id, model_type: ModelType):
+        return f"runs:/{run_id}/{model_type.value}"
 
-    def get_artifact_url_prior(self):
-        return "mlflow-artifacts:/prior/Staging"
-
-    def get_artifact_url_decoder(self):
-        return "mlflow-artifacts:/decoder/Staging"
-
-    def get_artifact_url_dalle2(self):
-        return "mlflow-artifacts:/dalle2/Staging"
+    def get_registered_model_name(self, model_type: ModelType, version: t.Union[Stage, int] = None):
+        # Do we actually needs "mlflow-artifacts:" ??
+        if version is None:
+            return f"{model_type.value}"
+        elif isinstance(version, Stage):
+            return f"{model_type.value}/{version.value}"
+        else:
+            return f"{model_type.value}/{version}"

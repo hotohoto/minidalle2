@@ -1,5 +1,13 @@
 # Mini Dall-E 2 (WIP)
 
+## TODO
+
+- check if it continues training
+- Read related papers again that I have read before
+- follow DALLE2 class and see how it handles the input text
+- Read cited papers at https://github.com/lucidrains/DALLE2-pytorch
+- deploy it as an ONNX model for web browsers
+
 ## Install dependencies
 
 ```
@@ -88,3 +96,4 @@ pytest
 - https://github.com/redcaps-dataset/redcaps-downloader
 - https://python-poetry.org/docs/repositories/
 - https://github.com/hotohoto/python-example-project
+- https://medium.com/analytics-vidhya/build-a-machine-learning-laboratory-from-anywhere-google-colab-ngrok-ca7590777bd8

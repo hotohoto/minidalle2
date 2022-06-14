@@ -1,48 +1,38 @@
+import typing as t
+
 import mlflow
 from dalle2_pytorch import CLIP, DALLE2, Decoder, DiffusionPrior
 from mlflow.tracking import MlflowClient
 
+from minidalle2.values.config import ModelType, Stage
 from minidalle2.values.trainer_config import TrainerConfig
 
 
 class Repository:
     def __init__(self, config: TrainerConfig):
         self.config = config
-        self.client = MlflowClient()
+        self.client = MlflowClient(config.MLFLOW_TRACKING_URI)
 
-    def check_if_exists(self, model_name):
+    def check_if_exists(self, model_type: ModelType):
         models = self.client.search_registered_models()
         for m in models:
-            if m.name == model_name:
+            if m.name == self.config.get_registered_model_name(model_type):
                 return True
         return False
 
-    def load_clip(self) -> CLIP:
-        if not self.check_if_exists("clip"):
+    def load_model(self, model_type: ModelType, stage: Stage = None) -> t.Union[CLIP, DiffusionPrior, Decoder, DALLE2]:
+        if not self.check_if_exists(model_type):
             return None
-        return mlflow.pytorch.load_model("mlflow-artifacts:/clip/Staging")
+        name = self.config.get_registered_model_name(model_type)
+        if stage is None:
+            run_id = self.client.get_latest_versions(name=name)[0].run_id
+        else:
+            run_id = self.client.get_latest_versions(name=name, stages=[stage.value]).run_id
 
-    def load_prior(self) -> DiffusionPrior:
-        if not self.check_if_exists("prior"):
-            return None
-        return mlflow.pytorch.load_model("mlflow-artifacts:/prior/Staging")
+        return mlflow.pytorch.load_model(self.config.get_model_uri(run_id, model_type))
 
-    def load_decoder(self) -> Decoder:
-        if not self.check_if_exists("decoder"):
-            return None
-        return mlflow.pytorch.load_model("mlflow-artifacts:/decoder/Staging")
-
-    def load_dalle2(self) -> DALLE2:
-        return mlflow.pytorch.load_model("mlflow-artifacts:/dalle2/Staging")
-
-    def save_clip(self, clip: CLIP):
-        mlflow.pytorch.log_model(clip, "clip")
-
-    def save_prior(self, prior: DiffusionPrior):
-        mlflow.pytorch.log_model(prior, "prior")
-
-    def save_decoder(self, decoder: Decoder):
-        mlflow.pytorch.log_model(decoder, "decoder")
-
-    def save_dalle2(self, dalle2: DALLE2):
-        mlflow.pytorch.log_model(dalle2, "dalle2")
+    def save_model(self, run_id, model_type: ModelType):
+        mlflow.register_model(
+            self.config.get_model_uri(run_id, model_type),
+            self.config.get_registered_model_name(model_type),
+        )

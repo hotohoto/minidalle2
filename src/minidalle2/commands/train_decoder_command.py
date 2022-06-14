@@ -3,6 +3,7 @@ import click
 from minidalle2.usecases.model import build_decoder
 from minidalle2.usecases.repository import Repository
 from minidalle2.usecases.train_decoder import train_decoder
+from minidalle2.values.config import ModelType
 from minidalle2.values.trainer_config import TrainerConfig
 
 
@@ -17,16 +18,14 @@ def execute(n_epochs, resume):
     repo = Repository(config=config)
 
     if resume:
-        decoder = repo.load_decoder()
+        decoder = repo.load_model(ModelType.DECODER)
         if not decoder:
-            clip = repo.load_clip()
+            clip = repo.load_model(ModelType.CLIP)
             decoder = build_decoder(config, clip=clip)
     else:
-        clip = repo.load_clip()
+        clip = repo.load_model(ModelType.CLIP)
         decoder = build_decoder(config, clip=clip)
 
-    train_decoder(decoder, config)
-
-    repo.save_decoder(decoder)
+    train_decoder(decoder, config, repo)
 
     click.echo("Done.")
