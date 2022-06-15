@@ -3,9 +3,8 @@
 ## TODO
 
 - check if it continues training
-- Read related papers again that I have read before
-- follow DALLE2 class and see how it handles the input text
 - Read cited papers at https://github.com/lucidrains/DALLE2-pytorch
+- train the model and debug it
 - deploy it as an ONNX model for web browsers
 
 ## Install dependencies

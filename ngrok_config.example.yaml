@@ -1,4 +1,4 @@
-authtoken: YOU_AUTH_TOKEN
+authtoken: YOUR_AUTH_TOKEN
 tunnels:
   mlflow-tracking-server:
     addr: 5000
