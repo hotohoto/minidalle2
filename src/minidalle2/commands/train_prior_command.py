@@ -1,7 +1,7 @@
 import click
 
+from minidalle2.repositories.mlflow_repository import MlflowRepository
 from minidalle2.usecases.model import build_prior
-from minidalle2.usecases.repository import Repository
 from minidalle2.usecases.train_prior import train_prior
 from minidalle2.values.config import ModelType
 from minidalle2.values.trainer_config import TrainerConfig
@@ -15,7 +15,7 @@ def execute(n_epochs, resume):
     if n_epochs:
         config.n_epochs_decoder = n_epochs
 
-    repo = Repository(config=config)
+    repo = MlflowRepository(config=config)
 
     if resume:
         prior = repo.load_model(ModelType.PRIOR)

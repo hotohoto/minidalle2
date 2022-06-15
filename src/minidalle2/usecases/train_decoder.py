@@ -17,7 +17,7 @@ def train_decoder(decoder: Decoder, config: TrainerConfig):
     trainset = CustomRemoteDataset(config, config.get_index_db_path(DatasetType.TRAIN))
 
     for _ in range(config.n_epochs_decoder):
-        for batch in DataLoader(trainset, batch_size=64, shuffle=True):
+        for batch in DataLoader(trainset, batch_size=64, shuffle=False):
             images = batch["image"]
 
             for unet_number in (1, 2):

@@ -10,13 +10,16 @@ class DatasetType(Enum):
     TRAIN = "TRAIN"
     TEST = "TEST"
 
+
 class ModelType(Enum):
     CLIP = "dalle2-clip"
     PRIOR = "dalle2-prior"
     DECODER = "dalle2-decoder"
     DALLE2 = "dalle2"
 
+
 class Stage(Enum):
+    NONE = "None"
     STAGING = "Staging"
     PRODUCTION = "Production"
     ARCHIVED = "Archived"

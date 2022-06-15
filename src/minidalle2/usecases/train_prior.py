@@ -19,11 +19,13 @@ def train_prior(prior: DiffusionPrior, config: TrainerConfig):
     trainset = CustomRemoteDataset(config, config.get_index_db_path(DatasetType.TRAIN))
 
     for _ in range(config.n_epochs_prior):
-        for batch in DataLoader(trainset, batch_size=64, shuffle=True):
+        for batch in DataLoader(trainset, batch_size=64, shuffle=False):
             images = batch["image"]
-            captions = torch.stack(
-                [tokenizer.tokenize(caption) for caption in batch["caption"]]
-            ).squeeze(1).to(device)
+            captions = (
+                torch.stack([tokenizer.tokenize(caption) for caption in batch["caption"]])
+                .squeeze(1)
+                .to(device)
+            )
 
             loss = prior(captions, images)
             loss.backward()

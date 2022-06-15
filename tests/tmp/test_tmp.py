@@ -2,7 +2,7 @@ import mlflow
 import torch
 import torchvision.models
 
-from minidalle2.usecases.repository import Repository
+from minidalle2.repositories.mlflow_repository import MlflowRepository, start_run
 from minidalle2.values.config import ModelType
 from minidalle2.values.trainer_config import TrainerConfig
 
@@ -11,10 +11,17 @@ class TestTmp:
     def test_save_and_load_clip(self):
         config = TrainerConfig().load()
         mlflow.set_tracking_uri(config.MLFLOW_TRACKING_URI)
-        repo = Repository(config)
-        with mlflow.start_run() as run:
+
+        repo = MlflowRepository(config)
+        with start_run(repo, ModelType.CLIP):
             model = torchvision.models.vgg16(pretrained=True)
-            mlflow.pytorch.log_model(model, ModelType.CLIP.value)
-        repo.save_model(run_id=run.info.run_id, model_type=ModelType.CLIP)
-        model_loaded = repo.load_model(ModelType.CLIP)
-        all(torch.equal(v, w) for v, w in zip(model_loaded.parameters(), model.parameters()))
+            repo.register_model(model, trained_epochs=3, trained_steps=5)
+
+        registered_model = repo.load_model(ModelType.CLIP)
+
+        assert all(
+            torch.equal(v, w)
+            for v, w in zip(registered_model.model.parameters(), model.parameters())
+        )
+        assert registered_model.trained_epochs == 3
+        assert registered_model.trained_steps == 5
