@@ -56,11 +56,14 @@ def train_clip(clip: CLIP, config: TrainerConfig, repo: MlflowRepository, n_step
 
                 if step % 5 == 0:
                     mlflow.log_metric(key="loss", value=loss, step=step)
-                    repo.register_model(
-                        model=clip,
-                        trained_epochs=epoch,
-                        trained_steps=step + 1,
-                    )
+
+                    if step % 100 == 0:
+
+                        repo.register_model(
+                            model=clip,
+                            trained_epochs=epoch,
+                            trained_steps=step + 1,
+                        )
 
     if was_eval:
         freeze_model_and_make_eval_(clip)

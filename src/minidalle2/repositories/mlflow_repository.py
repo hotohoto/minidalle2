@@ -85,7 +85,7 @@ class MlflowRepository:
 
 @contextmanager
 def start_run(repo: MlflowRepository, model_type: ModelType):
-    with mlflow.start_run() as run:
+    with mlflow.start_run(experiment_id=f"train {model_type.value}") as run:
         try:
             if repo.active_run or repo.active_run_model_type:
                 raise Exception("The repository has an active run already.")

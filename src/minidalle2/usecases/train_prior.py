@@ -1,9 +1,5 @@
 import torch
 from dalle2_pytorch import DiffusionPrior
-from dalle2_pytorch.dalle2_pytorch import (
-    freeze_model_and_make_eval_,
-    unfreeze_all_layers_,
-)
 from dalle2_pytorch.tokenizer import tokenizer
 from torch.utils.data import DataLoader
 
