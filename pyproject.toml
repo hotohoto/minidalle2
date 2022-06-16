@@ -41,6 +41,7 @@ train_clip = {script="minidalle2.commands.train_clip_command:execute"}
 train_prior = {script="minidalle2.commands.train_prior_command:execute"}
 train_decoder = {script="minidalle2.commands.train_decoder_command:execute"}
 infer = {script="minidalle2.commands.infer_command:execute"}
+start_ngrok = "bin/start_ngrok.sh"
 start_servers = "bin/start_servers.sh"
 test = "pytest -- tests/minidalle2"
 test_integration = "pytest -- tests/integration"
