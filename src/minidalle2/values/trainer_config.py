@@ -49,7 +49,7 @@ class TrainerConfig(Config):
             raise ValueError()
 
     def get_model_uri(self, run_id, model_type: ModelType):
-        return f"runs:/{run_id}/{model_type.value}"
+        return f"mlflow-artifacts:/{run_id}/{model_type.value}"
 
     def get_registered_model_name(self, model_type: ModelType, version: t.Union[Stage, int] = None):
         # Do we actually needs "mlflow-artifacts:" ??

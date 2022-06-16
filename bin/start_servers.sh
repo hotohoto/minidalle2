@@ -9,4 +9,5 @@ trap "kill 0" EXIT
 
 mlflow server \
 --backend-store-uri=sqlite:///mlflow.db \
---default-artifact-root=./mlartifacts
+--artifacts-destination=./mlartifacts \
+--serve-artifacts

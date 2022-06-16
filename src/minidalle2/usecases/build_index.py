@@ -59,7 +59,7 @@ def build_index(config: ServerConfig, trainset_ratio=0.99, skip_na_entries=True,
                     captions.append(caption)
                     cnt += 1
 
-            _LOGGER.info("%s (%d/%d)", p.name, cnt, total_cnt)
+            _LOGGER.debug("%s (%d/%d)", p.name, cnt, total_cnt)
 
             df = pd.DataFrame(
                 {

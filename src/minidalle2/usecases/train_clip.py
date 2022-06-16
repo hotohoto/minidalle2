@@ -1,3 +1,5 @@
+import logging
+
 import mlflow
 import torch
 from dalle2_pytorch import CLIP
@@ -13,6 +15,8 @@ from minidalle2.values.config import DatasetType, ModelType
 from minidalle2.values.custom_remote_dataset import CustomRemoteDataset
 from minidalle2.values.sampler import SkippedSampler
 from minidalle2.values.trainer_config import TrainerConfig
+
+_LOGGER = logging.getLogger(__name__)
 
 
 def train_clip(clip: CLIP, config: TrainerConfig, repo: MlflowRepository, n_steps_to_skip=0):
@@ -54,16 +58,17 @@ def train_clip(clip: CLIP, config: TrainerConfig, repo: MlflowRepository, n_step
                 loss = clip(captions, images, return_loss=True)
                 loss.backward()
 
-                if step % 5 == 0:
-                    mlflow.log_metric(key="loss", value=loss, step=step)
+                _LOGGER.debug(f"{epoch}:{step} loss={loss}")
 
-                    if step % 100 == 0:
+                # if step % 5 == 0:
+                mlflow.log_metric(key="loss", value=loss, step=step)
 
-                        repo.register_model(
-                            model=clip,
-                            trained_epochs=epoch,
-                            trained_steps=step + 1,
-                        )
+                # if step % 100 == 0:
+                repo.register_model(
+                    model=clip,
+                    trained_epochs=epoch,
+                    trained_steps=step + 1,
+                )
 
     if was_eval:
         freeze_model_and_make_eval_(clip)
