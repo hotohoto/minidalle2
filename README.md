@@ -2,7 +2,13 @@
 
 ## TODO
 
+- build index with url
+- add a command to download images
+- do exploratory data analysis
+  - check data quality
+  - get images in a random order
 - check if it continues training
+- add flask/fastapi for donwloading images without index
 - Read cited papers at https://github.com/lucidrains/DALLE2-pytorch
 - train the model and debug it
 - deploy it as an ONNX model for web browsers

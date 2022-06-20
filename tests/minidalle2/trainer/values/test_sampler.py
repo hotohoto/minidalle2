@@ -1,6 +1,6 @@
 from torch.utils.data import BatchSampler, SequentialSampler
 
-from minidalle2.values.sampler import SkippedSampler
+from minidalle2.trainer.values.sampler import SkippedSampler
 
 
 class TestCustomBatchSampler:

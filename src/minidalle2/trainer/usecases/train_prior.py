@@ -3,9 +3,9 @@ from dalle2_pytorch import DiffusionPrior
 from dalle2_pytorch.tokenizer import tokenizer
 from torch.utils.data import DataLoader
 
+from minidalle2.trainer.values.custom_remote_dataset import CustomRemoteDataset
+from minidalle2.trainer.values.trainer_config import TrainerConfig
 from minidalle2.values.config import DatasetType
-from minidalle2.values.custom_remote_dataset import CustomRemoteDataset
-from minidalle2.values.trainer_config import TrainerConfig
 
 
 def train_prior(prior: DiffusionPrior, config: TrainerConfig):

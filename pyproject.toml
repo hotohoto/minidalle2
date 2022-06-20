@@ -35,12 +35,12 @@ build-backend = "poetry.core.masonry.api"
 requires = ["poetry-core>=1.0.0"]
 
 [tool.poe.tasks]
-build_index = {script="minidalle2.commands.build_index_command:execute"}
-download_index = {script="minidalle2.commands.download_index_command:execute"}
-train_clip = {script="minidalle2.commands.train_clip_command:execute"}
-train_prior = {script="minidalle2.commands.train_prior_command:execute"}
-train_decoder = {script="minidalle2.commands.train_decoder_command:execute"}
-infer = {script="minidalle2.commands.infer_command:execute"}
+build_index = {script="minidalle2.server.commands.build_index_command:execute"}
+download_index = {script="minidalle2.trainer.commands.download_index_command:execute"}
+train_clip = {script="minidalle2.trainer.commands.train_clip_command:execute"}
+train_prior = {script="minidalle2.trainer.commands.train_prior_command:execute"}
+train_decoder = {script="minidalle2.trainer.commands.train_decoder_command:execute"}
+infer = {script="minidalle2.trainer.commands.infer_command:execute"}
 start_ngrok = "bin/start_ngrok.sh"
 start_servers = "bin/start_servers.sh"
 test = "pytest -- tests/minidalle2"

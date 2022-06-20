@@ -8,7 +8,7 @@ from torch import Tensor
 from torch.utils.data.dataset import Dataset
 from torchvision import transforms
 
-from minidalle2.values.trainer_config import TrainerConfig
+from minidalle2.trainer.values.trainer_config import TrainerConfig
 
 
 class CustomRemoteDataset(Dataset):

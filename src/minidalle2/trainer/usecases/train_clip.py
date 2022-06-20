@@ -10,11 +10,14 @@ from dalle2_pytorch.dalle2_pytorch import (
 from dalle2_pytorch.tokenizer import tokenizer
 from torch.utils.data import BatchSampler, DataLoader, SequentialSampler
 
-from minidalle2.repositories.mlflow_repository import MlflowRepository, start_run
+from minidalle2.trainer.repositories.mlflow_repository import (
+    MlflowRepository,
+    start_run,
+)
+from minidalle2.trainer.values.custom_remote_dataset import CustomRemoteDataset
+from minidalle2.trainer.values.sampler import SkippedSampler
+from minidalle2.trainer.values.trainer_config import TrainerConfig
 from minidalle2.values.config import DatasetType, ModelType
-from minidalle2.values.custom_remote_dataset import CustomRemoteDataset
-from minidalle2.values.sampler import SkippedSampler
-from minidalle2.values.trainer_config import TrainerConfig
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -56,14 +59,14 @@ def train_clip(clip: CLIP, config: TrainerConfig, repo: MlflowRepository, n_step
                     .to(device)
                 )
                 loss = clip(captions, images, return_loss=True)
-                loss.backward()
+                # loss.backward()  # FIXME
 
                 _LOGGER.debug(f"{epoch}:{step} loss={loss}")
 
-                # if step % 5 == 0:
+                # if step % 5 == 0:  # FIXME
                 mlflow.log_metric(key="loss", value=loss, step=step)
 
-                # if step % 100 == 0:
+                # if step % 100 == 0:  # FIXME
                 repo.register_model(
                     model=clip,
                     trained_epochs=epoch,

@@ -5,7 +5,7 @@ import sqlite3
 import pandas as pd
 
 from minidalle2.values.config import DatasetType
-from minidalle2.values.server_config import ServerConfig
+from minidalle2.server.values.server_config import ServerConfig
 
 _LOGGER = logging.getLogger(__name__)
 

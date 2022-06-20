@@ -3,13 +3,13 @@ from contextlib import contextmanager
 import mlflow
 from mlflow.tracking import MlflowClient
 
-from minidalle2.values.config import ModelType, Stage
-from minidalle2.values.registered_model import (
+from minidalle2.trainer.values.registered_model import (
     TAG_KEY_TRAINED_EPOCHS,
     TAG_KEY_TRAINED_STEPS,
     RegisteredModel,
 )
-from minidalle2.values.trainer_config import TrainerConfig
+from minidalle2.trainer.values.trainer_config import TrainerConfig
+from minidalle2.values.config import ModelType, Stage
 
 
 class MlflowRepository:
@@ -85,7 +85,7 @@ class MlflowRepository:
 
 @contextmanager
 def start_run(repo: MlflowRepository, model_type: ModelType):
-    with mlflow.start_run(experiment_id=f"train {model_type.value}") as run:
+    with mlflow.start_run() as run:
         try:
             if repo.active_run or repo.active_run_model_type:
                 raise Exception("The repository has an active run already.")

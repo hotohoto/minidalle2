@@ -10,10 +10,10 @@ import requests
 import torch
 from requests.adapters import HTTPAdapter, Retry
 
+from minidalle2.server.values.server_config import ServerConfig
+from minidalle2.trainer.values.custom_remote_dataset import CustomRemoteDataset
+from minidalle2.trainer.values.trainer_config import TrainerConfig
 from minidalle2.values.config import DatasetType
-from minidalle2.values.custom_remote_dataset import CustomRemoteDataset
-from minidalle2.values.server_config import ServerConfig
-from minidalle2.values.trainer_config import TrainerConfig
 
 
 class TestCustomDataset:

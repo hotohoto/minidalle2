@@ -1,11 +1,11 @@
 import click
 
 from minidalle2.logging import init_logging
-from minidalle2.repositories.mlflow_repository import MlflowRepository
-from minidalle2.usecases.model import build_clip
-from minidalle2.usecases.train_clip import train_clip
+from minidalle2.trainer.repositories.mlflow_repository import MlflowRepository
+from minidalle2.trainer.usecases.model import build_clip
+from minidalle2.trainer.usecases.train_clip import train_clip
+from minidalle2.trainer.values.trainer_config import TrainerConfig
 from minidalle2.values.config import ModelType
-from minidalle2.values.trainer_config import TrainerConfig
 
 
 @click.command()

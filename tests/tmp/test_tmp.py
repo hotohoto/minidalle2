@@ -2,9 +2,12 @@ import mlflow
 import torch
 import torchvision.models
 
-from minidalle2.repositories.mlflow_repository import MlflowRepository, start_run
+from minidalle2.trainer.repositories.mlflow_repository import (
+    MlflowRepository,
+    start_run,
+)
+from minidalle2.trainer.values.trainer_config import TrainerConfig
 from minidalle2.values.config import ModelType
-from minidalle2.values.trainer_config import TrainerConfig
 
 
 class TestTmp:

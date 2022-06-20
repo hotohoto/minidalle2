@@ -1,8 +1,8 @@
 import urllib.request
 from pathlib import Path
 
+from minidalle2.trainer.values.trainer_config import TrainerConfig
 from minidalle2.values.config import DatasetType
-from minidalle2.values.trainer_config import TrainerConfig
 
 
 def download_index(config: TrainerConfig):

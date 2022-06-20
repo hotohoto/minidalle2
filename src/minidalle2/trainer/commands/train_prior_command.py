@@ -1,11 +1,11 @@
 import click
 
 from minidalle2.logging import init_logging
-from minidalle2.repositories.mlflow_repository import MlflowRepository
-from minidalle2.usecases.model import build_decoder
-from minidalle2.usecases.train_decoder import train_decoder
+from minidalle2.trainer.repositories.mlflow_repository import MlflowRepository
+from minidalle2.trainer.usecases.model import build_prior
+from minidalle2.trainer.usecases.train_prior import train_prior
+from minidalle2.trainer.values.trainer_config import TrainerConfig
 from minidalle2.values.config import ModelType
-from minidalle2.values.trainer_config import TrainerConfig
 
 
 @click.command()
@@ -21,14 +21,16 @@ def execute(n_epochs, resume):
     repo = MlflowRepository(config=config)
 
     if resume:
-        decoder = repo.load_model(ModelType.DECODER)
-        if not decoder:
+        prior = repo.load_model(ModelType.PRIOR)
+        if not prior:
             clip = repo.load_model(ModelType.CLIP)
-            decoder = build_decoder(config, clip=clip)
+            prior = build_prior(config, clip=clip)
     else:
         clip = repo.load_model(ModelType.CLIP)
-        decoder = build_decoder(config, clip=clip)
+        prior = build_prior(config, clip=clip)
 
-    train_decoder(decoder, config, repo)
+    train_prior(prior, config, repo)
+
+    repo.save_prior(prior)
 
     click.echo("Done.")

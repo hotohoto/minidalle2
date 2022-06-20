@@ -1,10 +1,7 @@
-import dataclasses
 import typing as t
 from dataclasses import dataclass
 
 import torch
-
-from minidalle2.values.config import ModelType
 
 TAG_KEY_TRAINED_STEPS = "minidalle2.trained_steps"
 TAG_KEY_TRAINED_EPOCHS = "minidalle2.trained_epochs"

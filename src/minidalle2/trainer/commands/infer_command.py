@@ -4,10 +4,10 @@ import click
 from torchvision.utils import save_image
 
 from minidalle2.logging import init_logging
-from minidalle2.repositories.mlflow_repository import MlflowRepository
-from minidalle2.usecases.infer import infer
+from minidalle2.trainer.repositories.mlflow_repository import MlflowRepository
+from minidalle2.trainer.usecases.infer import infer
+from minidalle2.trainer.values.trainer_config import TrainerConfig
 from minidalle2.values.config import ModelType
-from minidalle2.values.trainer_config import TrainerConfig
 
 
 @click.Argument("output_image_path", nargs=1, type=click.Path(exists=False))
