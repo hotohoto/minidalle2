@@ -6,11 +6,6 @@ import torch
 from torch import DeviceObjType
 
 
-class DatasetType(Enum):
-    TRAIN = "TRAIN"
-    TEST = "TEST"
-
-
 class ModelType(Enum):
     CLIP = "dalle2-clip"
     PRIOR = "dalle2-prior"
@@ -28,26 +23,23 @@ class Stage(Enum):
 @dataclass
 class Config:
     device: DeviceObjType = None
+    image_width_height: int = None
 
     def load(self) -> "Config":
         self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+        self.image_width_height = 128
         return self
 
     @property
     def datasets_path(self):
         raise NotImplementedError()
 
-    def get_index_db_path(self, type_: DatasetType) -> Path:
-        assert self.datasets_path is not None
-
-        if type_ is DatasetType.TRAIN:
-            return Path(self.datasets_path, "index_trainset.db")
-        elif type_ is DatasetType.TEST:
-            return Path(self.datasets_path, "index_testset.db")
-        else:
-            raise ValueError()
-
     def get_image_path(self, subreddit, image_id) -> Path:
         assert self.datasets_path is not None
 
-        return Path(self.datasets_path, "images", subreddit, f"{image_id}.jpg")
+        return Path(
+            self.datasets_path,
+            f"images_{str(self.image_width_height)}",
+            subreddit,
+            f"{image_id}.jpg",
+        )

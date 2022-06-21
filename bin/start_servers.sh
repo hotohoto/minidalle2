@@ -3,7 +3,7 @@
 # run servers and kill the processes running in the background
 # https://stackoverflow.com/a/22644006/1874690
 
-python -m http.server --directory datasets &
+uvicorn --port=8000 --app-dir=src minidalle2.server.api.main:app &
 trap "exit" INT TERM
 trap "kill 0" EXIT
 

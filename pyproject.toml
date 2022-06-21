@@ -19,6 +19,10 @@ pyngrok = "^5.1.0"
 python = ">=3.7,<3.8"
 torch = "^1.11.0"
 torchvision = "^0.12.0"
+fastapi = "^0.78.0"
+uvicorn = "^0.17.6"
+SQLAlchemy = "^1.4.37"
+tqdm = "^4.64.0"
 
 [tool.poetry.dev-dependencies]
 black = "^22.3.0"
@@ -35,8 +39,9 @@ build-backend = "poetry.core.masonry.api"
 requires = ["poetry-core>=1.0.0"]
 
 [tool.poe.tasks]
-build_index = {script="minidalle2.server.commands.build_index_command:execute"}
-download_index = {script="minidalle2.trainer.commands.download_index_command:execute"}
+import_annotations = {script="minidalle2.server.commands.import_annotations_command:execute"}
+download_images = {script="minidalle2.server.commands.download_images_command:execute"}
+update_splits = {script="minidalle2.server.commands.update_splits_command:execute"}
 train_clip = {script="minidalle2.trainer.commands.train_clip_command:execute"}
 train_prior = {script="minidalle2.trainer.commands.train_prior_command:execute"}
 train_decoder = {script="minidalle2.trainer.commands.train_decoder_command:execute"}

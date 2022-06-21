@@ -4,12 +4,12 @@ from torch.utils.data import DataLoader
 
 from minidalle2.trainer.values.custom_remote_dataset import CustomRemoteDataset
 from minidalle2.trainer.values.trainer_config import TrainerConfig
-from minidalle2.values.config import DatasetType
+from minidalle2.values.datasets import DatasetType
 
 
 def train_decoder(decoder: Decoder, config: TrainerConfig):
 
-    trainset = CustomRemoteDataset(config, config.get_index_db_path(DatasetType.TRAIN))
+    trainset = CustomRemoteDataset(config, DatasetType.TRAIN)
 
     for _ in range(config.n_epochs_decoder):
         for batch in DataLoader(trainset, batch_size=64, shuffle=False):

@@ -1,6 +1,4 @@
-import sqlite3
 import typing as t
-from pathlib import Path
 
 import requests
 from PIL import Image
@@ -9,43 +7,39 @@ from torch.utils.data.dataset import Dataset
 from torchvision import transforms
 
 from minidalle2.trainer.values.trainer_config import TrainerConfig
+from minidalle2.values.datasets import DatasetType
 
 
 class CustomRemoteDataset(Dataset):
-    def __init__(self, config: TrainerConfig, index_db_path: Path):
+    def __init__(self, config: TrainerConfig, dataset_type: DatasetType):
         super().__init__()
 
         self.config = config
-        self.index_db_path = index_db_path
+        self.dataset_type = dataset_type
         self.pil_image_to_tensor = transforms.ToTensor()
         self._length = None
 
     def __getitem__(self, index) -> t.Dict[Tensor, str]:
-        with sqlite3.connect(self.index_db_path) as conn:
-            cursor = conn.cursor()
-            cursor.execute(
-                "SELECT subreddit, image_id, caption FROM redcaps WHERE rowid=?", (index + 1,)
-            )
-            result = cursor.fetchone()
-            subreddit, image_id, caption = result
-            image_url = self.config.get_image_url(subreddit, image_id)
-            local_image_path = self.config.get_image_path(subreddit, image_id)
+        rowid = index + 1
+        data_url = self.config.get_data_url(rowid=rowid, dataset_type=self.dataset_type)
+        response = requests.get(data_url).json()
+        image_url = self.config.get_image_url(rowid=rowid, dataset_type=self.dataset_type)
+        local_image_path = self.config.get_image_path(response["subreddit"], response["image_id"])
 
-            if not local_image_path.exists():
-                respnose = requests.get(image_url)
-                local_image_path.parent.mkdir(parents=True, exist_ok=True)
-                with open(local_image_path, "wb") as f:
-                    f.write(respnose.content)
+        if not local_image_path.exists():
+            respnose = requests.get(image_url)
+            local_image_path.parent.mkdir(parents=True, exist_ok=True)
+            with open(local_image_path, "wb") as f:
+                f.write(respnose.content)
 
-            return dict(
-                image=self.pil_image_to_tensor(Image.open(local_image_path)),
-                caption=caption,
-            )
+        return dict(
+            image=self.pil_image_to_tensor(Image.open(local_image_path)),
+            caption=response["caption"],
+        )
 
     def __len__(self):
         if self._length is None:
-            with sqlite3.connect(self.index_db_path) as conn:
-                cursor = conn.cursor()
-                cursor.execute("SELECT COUNT(*) FROM redcaps")
-                self._length = cursor.fetchone()[0]
+            length_url = self.config.get_data_length_url(self.dataset_type)
+            self._length = requests.get(length_url).json()
+
         return self._length

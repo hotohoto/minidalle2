@@ -18,5 +18,9 @@ class ServerConfig(Config):
 
         return self.DATASETS_PATH
 
+    @property
+    def index_db_path(self):
+        return Path(self.datasets_path, "index.db")
+
     def get_annotations_path(self):
         return Path(self.datasets_path, "annotations")

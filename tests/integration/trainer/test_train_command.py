@@ -1,6 +1,6 @@
 from click.testing import CliRunner
 
-import minidalle2.commands.train_clip_command as train_clip_command
+import minidalle2.trainer.commands.train_clip_command as train_clip_command
 
 
 class TestTrainCommand:

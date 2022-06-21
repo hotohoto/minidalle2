@@ -17,7 +17,8 @@ from minidalle2.trainer.repositories.mlflow_repository import (
 from minidalle2.trainer.values.custom_remote_dataset import CustomRemoteDataset
 from minidalle2.trainer.values.sampler import SkippedSampler
 from minidalle2.trainer.values.trainer_config import TrainerConfig
-from minidalle2.values.config import DatasetType, ModelType
+from minidalle2.values.config import ModelType
+from minidalle2.values.datasets import DatasetType
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -30,7 +31,7 @@ def train_clip(clip: CLIP, config: TrainerConfig, repo: MlflowRepository, n_step
     # dummy_text = torch.randint(0, 49408, (4, 256), device=device)
     # dummy_images = torch.randn(4, 3, 256, 256, device=device)
 
-    trainset = CustomRemoteDataset(config, config.get_index_db_path(DatasetType.TRAIN))
+    trainset = CustomRemoteDataset(config, DatasetType.TRAIN)
     batch_size = 64
 
     was_eval = not clip.training

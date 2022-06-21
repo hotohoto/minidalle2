@@ -2,7 +2,8 @@ import os
 import typing as t
 from pathlib import Path
 
-from minidalle2.values.config import Config, DatasetType, ModelType, Stage
+from minidalle2.values.config import Config, ModelType, Stage
+from minidalle2.values.datasets import DatasetType
 
 
 class TrainerConfig(Config):
@@ -33,20 +34,21 @@ class TrainerConfig(Config):
 
         return self.TMP_DATASETS_PATH
 
-    def get_image_url(self, subreddit, image_id):
+    def get_data_length_url(self, dataset_type: DatasetType):
+        assert self.DATASETS_URL is not None
+        return f"{self.DATASETS_URL}/data/{dataset_type.value.lower()}/length"
+
+    def get_data_url(self, rowid: int, dataset_type: DatasetType):
+        assert rowid > 0
         assert self.DATASETS_URL is not None
 
-        return f"{self.DATASETS_URL}/images/{subreddit}/{image_id}.jpg"
+        return f"{self.DATASETS_URL}/data/{dataset_type.value.lower()}/{rowid}"
 
-    def get_index_db_url(self, dataset_type: DatasetType):
+    def get_image_url(self, rowid: int, dataset_type: DatasetType):
+        assert rowid > 0
         assert self.DATASETS_URL is not None
 
-        if dataset_type is DatasetType.TRAIN:
-            return f"{self.DATASETS_URL}/index_trainset.db"
-        elif dataset_type is DatasetType.TEST:
-            return f"{self.DATASETS_URL}/index_testset.db"
-        else:
-            raise ValueError()
+        return f"{self.DATASETS_URL}/data/{dataset_type.value.lower()}/image/{rowid}"
 
     def get_model_uri(self, run_id, model_type: ModelType):
         # Note that "--serve-artifacts" may require "mlflow-artifacts:"

@@ -2,8 +2,6 @@
 
 ## TODO
 
-- build index with url
-- add a command to download images
 - do exploratory data analysis
   - check data quality
   - get images in a random order
@@ -23,37 +21,28 @@ poetry install
 
 ## Prepare datasets
 
-Refer to this script to download images in `./datasets/images`.
-
 ```sh
-cd ..
-git clone git@github.com:hotohoto/redcaps-downloader.git
-cd redcaps-downloader
-pyenv virtualenv 3.8.12 redcaps
-pyenv local redcaps
-pip install -r requirements.txt
-
-wget https://www.dropbox.com/s/cqtdpsl4hewlli1/redcaps_v1.0_annotations.zip?dl=1
+mkdir -p datasets
+cd datasets
+wget https://www.dropbox.com/s/cqtdpsl4hewlli1/redcaps_v1.0_annotations.zip
 unzip redcaps_v1.0_annotations.zip
 
-for ann_file in annotations/*.json; do
-    echo $ann_file
-    redcaps download-imgs -a $ann_file --save-to datasets/images --resize 64 -j 16;
-done
-ln -s $PWD/datasets/images ../mini-dalle2/datasets/images
-ln -s $PWD/annotations ../mini-dalle2/datasets/annotations
-```
-
-## Build index
-
-```sh
-poe build_index
+poe import_annotations  # import annotations. this is recommended to finish this completely
+poe download_images  # download images as much as you want
+poe update_splits  # update the trainset index and the testset index to take account of the recently downloaded images
 ```
 
 ## Launch your servers
 
 ```sh
 poe start_servers
+```
+
+You may want to access your local servers from a remote host.
+Then you can use alternative addresses provided by ngrok.
+
+```sh
+poe start_ngrok
 ```
 
 ## Train remotely

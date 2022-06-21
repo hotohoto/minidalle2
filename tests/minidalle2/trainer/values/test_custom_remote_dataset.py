@@ -13,7 +13,7 @@ from requests.adapters import HTTPAdapter, Retry
 from minidalle2.server.values.server_config import ServerConfig
 from minidalle2.trainer.values.custom_remote_dataset import CustomRemoteDataset
 from minidalle2.trainer.values.trainer_config import TrainerConfig
-from minidalle2.values.config import DatasetType
+from minidalle2.values.datasets import DatasetType
 
 
 class TestCustomDataset:
@@ -31,7 +31,7 @@ class TestCustomDataset:
 
         try:
             web_server_process = subprocess.Popen(
-                f"python -m http.server --directory {server_config.DATASETS_PATH} {server_port}",
+                f"DATASETS_PATH={server_config.DATASETS_PATH} uvicorn --port={server_port} --app-dir=src minidalle2.server.api.main:app",
                 shell=True,
                 preexec_fn=os.setsid,
             )
@@ -65,15 +65,10 @@ class TestCustomDataset:
             trainer_config.DATASETS_URL = datasets_url
             trainer_config.TMP_DATASETS_PATH = str(Path(tmpdir))
 
-            fixture_index_db = Path("tests/fixtures/datasets/index.db")
-            train_index_db = trainer_config.get_index_db_path(DatasetType.TRAIN)
-            assert fixture_index_db.exists()
-            os.symlink(fixture_index_db.resolve(), train_index_db.resolve())
-            assert train_index_db.exists()
-            dataset = CustomRemoteDataset(trainer_config)
+            dataset = CustomRemoteDataset(trainer_config, DatasetType.TRAIN)
 
-            assert len(dataset) == 1
+            assert len(dataset) == 3
             sample = dataset[0]
             assert sample is not None
-            assert sample.image.shape == torch.Size([3, 64, 64])
-            assert sample.caption
+            assert sample["image"].shape == torch.Size([3, 128, 128])
+            assert sample["caption"]
