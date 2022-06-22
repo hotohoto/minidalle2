@@ -7,6 +7,7 @@ from torch.utils.data.dataset import Dataset
 from torchvision import transforms
 
 from minidalle2.trainer.values.trainer_config import TrainerConfig
+from minidalle2.utils.validate_image import validate_image
 from minidalle2.values.datasets import DatasetType
 
 
@@ -26,7 +27,7 @@ class CustomRemoteDataset(Dataset):
         image_url = self.config.get_image_url(rowid=rowid, dataset_type=self.dataset_type)
         local_image_path = self.config.get_image_path(response["subreddit"], response["image_id"])
 
-        if not local_image_path.exists():
+        if not validate_image(local_image_path):
             respnose = requests.get(image_url)
             local_image_path.parent.mkdir(parents=True, exist_ok=True)
             with open(local_image_path, "wb") as f:

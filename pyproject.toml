@@ -41,6 +41,7 @@ requires = ["poetry-core>=1.0.0"]
 [tool.poe.tasks]
 import_annotations = {script="minidalle2.server.commands.import_annotations_command:execute"}
 download_images = {script="minidalle2.server.commands.download_images_command:execute"}
+validate_annotations = {script="minidalle2.server.commands.validate_annotations_command:execute"}
 update_splits = {script="minidalle2.server.commands.update_splits_command:execute"}
 train_clip = {script="minidalle2.trainer.commands.train_clip_command:execute"}
 train_prior = {script="minidalle2.trainer.commands.train_prior_command:execute"}

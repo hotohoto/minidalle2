@@ -99,9 +99,7 @@ def import_annotations(
                         url=row["url"],
                         dataset_type=row["dataset_type"],
                         download_status=(
-                            DownloadStatus.DONE
-                            if image_path.exists() and image_path.is_file()
-                            else DownloadStatus.NEW
+                            DownloadStatus.DONE if image_path.exists() else DownloadStatus.NEW
                         ),
                     )
                 )

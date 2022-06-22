@@ -45,6 +45,15 @@ class AnnotationRepository:
         LIMIT :limit
         """
     )
+    QUERY_SELECT_ROWS_DOWNLOADED = dedent(
+        """
+        SELECT idx, subreddit, image_id, caption, url, dataset_type, download_status
+        FROM redcaps
+        WHERE download_status = 'DONE'
+        LIMIT :limit
+        OFFSET :offset
+        """
+    )
     QUERY_SELECT_ROWS_TO_DOWNLOAD_INCLUDE_FAILED = dedent(
         """
         SELECT idx, subreddit, image_id, caption, url, dataset_type, download_status
@@ -54,15 +63,12 @@ class AnnotationRepository:
         LIMIT :limit
         """
     )
-    QUERY_COUNT_ROWS_TO_DOWNLOAD = dedent(
+    QUERY_COUNT_ROWS_BY_DOWNLOAD_STATUS = dedent(
         """
         SELECT COUNT(*)
         FROM redcaps
-        WHERE download_status = 'NEW'
+        WHERE download_status = :download_status
         """
-    )
-    QUERY_COUNT_ROWS_TO_DOWNLOAD_INCLUDE_FAILED = (
-        "SELECT COUNT(*) FROM redcaps WHERE download_status = 'NEW' or download_status = 'FAILED'"
     )
     QUERY_UPDATE_DOWNLOAD_STATUS = (
         "UPDATE redcaps SET download_status=:download_status WHERE idx = :idx"
@@ -186,6 +192,24 @@ class AnnotationRepository:
                 for a in ret
             ]
 
+    def get_annotations_downloaded(self, limit, offset) -> t.List[Annotation]:
+        with self.begin_transaction() as conn:
+            query = self.QUERY_SELECT_ROWS_DOWNLOADED
+            params = {"offset": offset, "limit": limit}
+            ret = tuple(conn.execute(query, params))
+            return [
+                Annotation(
+                    idx=a[0],
+                    subreddit=a[1],
+                    image_id=a[2],
+                    caption=a[3],
+                    url=a[4],
+                    dataset_type=DatasetType(a[5]),
+                    download_status=DownloadStatus(a[6]),
+                )
+                for a in ret
+            ]
+
     def update_download_status(self, annotations: t.List[Annotation]) -> int:
         assert annotations
 
@@ -195,14 +219,11 @@ class AnnotationRepository:
             ]
             return conn.execute(self.QUERY_UPDATE_DOWNLOAD_STATUS, params).rowcount
 
-    def count_annotations_to_download(self, include_failed) -> int:
+    def count_annotations_by_download_status(self, download_status: DownloadStatus) -> int:
         with self.begin_transaction() as conn:
-            query = (
-                self.QUERY_COUNT_ROWS_TO_DOWNLOAD_INCLUDE_FAILED
-                if include_failed
-                else self.QUERY_COUNT_ROWS_TO_DOWNLOAD
-            )
-            ret = tuple(conn.execute(query))
+            params = {"download_status": download_status.value}
+            query = self.QUERY_COUNT_ROWS_BY_DOWNLOAD_STATUS
+            ret = tuple(conn.execute(query, params))
             assert len(ret) == 1
             assert len(ret[0]) == 1
             return ret[0][0]

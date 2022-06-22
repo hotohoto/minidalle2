@@ -10,6 +10,7 @@ from tqdm import tqdm
 
 from minidalle2.server.repositories.annotation_repository import AnnotationRepository
 from minidalle2.server.values.server_config import ServerConfig
+from minidalle2.usecases.validate_image import validate_image
 from minidalle2.values.datasets import Annotation, DownloadStatus
 
 _LOGGER = logging.getLogger(__name__)
@@ -19,39 +20,40 @@ def runner(config: ServerConfig, annotation: Annotation):
     class SilentError(Exception):
         pass
 
+    def run():
+        response = requests.get(annotation.url)
+
+        # Check if image was downloaded (response must be 200). One exception:
+        # Imgur gives response 200 with "removed.png" image if not found.
+        if response.status_code != 200 or "removed.png" in response.url:
+            raise SilentError(f"Image not available: {annotation.url}")
+
+        # Write image to disk if it was downloaded successfully.
+        pil_image = Image.open(io.BytesIO(response.content)).convert("RGB")
+        image_width, image_height = pil_image.size
+        scale = config.image_width_height / float(min(image_width, image_height))
+        new_width, new_height = tuple(int(round(d * scale)) for d in (image_width, image_height))
+        if new_width >= new_height:
+            new_left = int((new_width - config.image_width_height) / 2)
+            new_top = 0
+            new_right = new_left + config.image_width_height
+            new_bottom = config.image_width_height
+        else:
+            new_left = 0
+            new_top = int((new_height - config.image_width_height) / 2)
+            new_right = config.image_width_height
+            new_bottom = new_top + config.image_width_height
+        pil_image = pil_image.resize((new_width, new_height)).crop(
+            (new_left, new_top, new_right, new_bottom)
+        )
+        image_path.parent.mkdir(parents=True, exist_ok=True)
+        pil_image.save(image_path)
+
     try:
         image_path = config.get_image_path(annotation.subreddit, annotation.image_id)
-        if not image_path.exists() or not image_path.is_file():
-            response = requests.get(annotation.url)
-
-            # Check if image was downloaded (response must be 200). One exception:
-            # Imgur gives response 200 with "removed.png" image if not found.
-            if response.status_code != 200 or "removed.png" in response.url:
-                raise SilentError(f"Image not available: {annotation.url}")
-
-            # Write image to disk if it was downloaded successfully.
-            pil_image = Image.open(io.BytesIO(response.content)).convert("RGB")
-            image_width, image_height = pil_image.size
-            scale = config.image_width_height / float(min(image_width, image_height))
-            new_width, new_height = tuple(
-                int(round(d * scale)) for d in (image_width, image_height)
-            )
-            if new_width >= new_height:
-                new_left = int((new_width - config.image_width_height) / 2)
-                new_top = 0
-                new_right = new_left + config.image_width_height
-                new_bottom = config.image_width_height
-            else:
-                new_left = 0
-                new_top = int((new_height - config.image_width_height) / 2)
-                new_right = config.image_width_height
-                new_bottom = new_top + config.image_width_height
-            pil_image = pil_image.resize((new_width, new_height)).crop(
-                (new_left, new_top, new_right, new_bottom)
-            )
-            image_path.parent.mkdir(parents=True, exist_ok=True)
-            pil_image.save(image_path)
-
+        valid = validate_image(image_path)
+        if not valid:
+            run()
         annotation.download_status = DownloadStatus.DONE
     except Exception as e:
         annotation.download_status = DownloadStatus.FAILED
@@ -66,9 +68,9 @@ def download_images(
     annotation_repo: AnnotationRepository,
     retry_failed: bool,
 ):
-    total_annotations_to_download = annotation_repo.count_annotations_to_download(
-        include_failed=retry_failed
-    )
+    total_annotations_to_download = annotation_repo.count_annotations_by_download_status(DownloadStatus.NEW)
+    if retry_failed:
+        total_annotations_to_download += annotation_repo.count_annotations_by_download_status(DownloadStatus.FAILED)
     limit = 300
     n_iterations = math.ceil(total_annotations_to_download / limit)
 
