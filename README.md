@@ -2,11 +2,9 @@
 
 ## TODO
 
-- do exploratory data analysis
-  - check data quality
-  - get images in a random order
-- check if it continues training
-- add flask/fastapi for donwloading images without index
+- try to apply pytorch lightening
+- Define an argument to download up to n images
+- validate annotations and mark them not to validate it again
 - Read cited papers at https://github.com/lucidrains/DALLE2-pytorch
 - train the model and debug it
 - deploy it as an ONNX model for web browsers
@@ -55,32 +53,14 @@ In Colab, you may run commands as follow.
 !MLFLOW_TRACKING_URI="https://your_tracking_server_url" \
 DATASETS_URL="https://your_datasets_server_url" \
 mlflow run https://github.com/hotohoto/minidalle2.git -e train_clip -v main -P n-epochs=1 --env-manager=local
-
-!MLFLOW_TRACKING_URI="https://your_tracking_server_url" \
-DATASETS_URL="https://your_datasets_server_url" \
-mlflow run https://github.com/hotohoto/minidalle2.git -e train_clip_reset -v main -P n-epochs=1 --env-manager=local
-
-!MLFLOW_TRACKING_URI="https://your_tracking_server_url" \
-DATASETS_URL="https://your_datasets_server_url" \
-mlflow run https://github.com/hotohoto/minidalle2.git -e train_prior -v main -P n-epochs=1 --env-manager=local
-
-!MLFLOW_TRACKING_URI="https://your_tracking_server_url" \
-DATASETS_URL="https://your_datasets_server_url" \
-mlflow run https://github.com/hotohoto/minidalle2.git -e train_prior_reset -v main -P n-epochs=1 --env-manager=local
-
-!MLFLOW_TRACKING_URI="https://your_tracking_server_url" \
-DATASETS_URL="https://your_datasets_server_url" \
-mlflow run https://github.com/hotohoto/minidalle2.git -e train_decoder -v main -P n-epochs=1 --env-manager=local
-
-!MLFLOW_TRACKING_URI="https://your_tracking_server_url" \
-DATASETS_URL="https://your_datasets_server_url" \
-mlflow run https://github.com/hotohoto/minidalle2.git -e train_decoder_reset -v main -P n-epochs=1 --env-manager=local
 ```
+
+You can also run the other tasks than `train_clip`. They are defined in [MLproject](./MLproject).
 
 ## Run tests
 
 ```bash
-pytest
+poe test
 ```
 
 ## References

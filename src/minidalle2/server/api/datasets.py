@@ -12,20 +12,18 @@ def register_api(app: FastAPI, config: ServerConfig, repo: AnnotationRepository)
     def upper(dataset_type: str) -> DatasetType:
         return DatasetType(dataset_type.upper())
 
-    @app.get("/data/{dataset_type}/length")
-    async def _get_dataset_length(dataset_type: str):
-        return get_dataset_len(repo, dataset_type=upper(dataset_type))
-
-    @app.get("/data/{dataset_type}/image/{rowid}")
-    async def _get_image(dataset_type: str, rowid: int):
-        assert rowid > 0
-        annotation = get_annotation_with_cache(repo, upper(dataset_type), rowid)
-        file_location = config.get_image_path(annotation.subreddit, annotation.image_id)
+    @app.get("/data/image/{subreddit}/{image_id}.jpg")
+    async def _get_image(subreddit: str, image_id: str):
+        file_location = config.get_image_path(subreddit, image_id)
         return FileResponse(
             file_location,
             media_type="application/octet-stream",
-            filename=f"{annotation.image_id}.jpg",
+            filename=f"{image_id}.jpg",
         )
+
+    @app.get("/data/{dataset_type}/length")
+    async def _get_dataset_length(dataset_type: str):
+        return get_dataset_len(repo, dataset_type=upper(dataset_type))
 
     @app.get("/data/{dataset_type_}/{rowid}")
     async def _get_data(dataset_type_: str, rowid: int):

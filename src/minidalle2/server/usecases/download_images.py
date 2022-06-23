@@ -10,7 +10,7 @@ from tqdm import tqdm
 
 from minidalle2.server.repositories.annotation_repository import AnnotationRepository
 from minidalle2.server.values.server_config import ServerConfig
-from minidalle2.usecases.validate_image import validate_image
+from minidalle2.utils.validate_image import validate_image
 from minidalle2.values.datasets import Annotation, DownloadStatus
 
 _LOGGER = logging.getLogger(__name__)
@@ -68,9 +68,13 @@ def download_images(
     annotation_repo: AnnotationRepository,
     retry_failed: bool,
 ):
-    total_annotations_to_download = annotation_repo.count_annotations_by_download_status(DownloadStatus.NEW)
+    total_annotations_to_download = annotation_repo.count_annotations_by_download_status(
+        DownloadStatus.NEW
+    )
     if retry_failed:
-        total_annotations_to_download += annotation_repo.count_annotations_by_download_status(DownloadStatus.FAILED)
+        total_annotations_to_download += annotation_repo.count_annotations_by_download_status(
+            DownloadStatus.FAILED
+        )
     limit = 300
     n_iterations = math.ceil(total_annotations_to_download / limit)
 

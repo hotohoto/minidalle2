@@ -5,18 +5,22 @@ from minidalle2.values.config import Config
 
 
 class ServerConfig(Config):
-    DATASETS_PATH: str = None
+    _datasets_path: str = None
 
     def load(self) -> "ServerConfig":
         super().load()
-        self.DATASETS_PATH = os.environ.get("DATASETS_PATH", str(Path("datasets").resolve()))
+        self.datasets_path = os.environ.get("DATASETS_PATH", str(Path("datasets").resolve()))
         return self
 
     @property
     def datasets_path(self):
-        assert self.DATASETS_PATH is not None
+        assert self._datasets_path is not None
 
-        return self.DATASETS_PATH
+        return self._datasets_path
+
+    @datasets_path.setter
+    def datasets_path(self, v):
+        self._datasets_path = v
 
     @property
     def index_db_path(self):

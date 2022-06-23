@@ -1,6 +1,7 @@
 from pathlib import Path
 
 import click
+import mlflow
 from torchvision.utils import save_image
 
 from minidalle2.logging import init_logging
@@ -17,6 +18,7 @@ def execute(output_image_path: Path, input_text: str):
     init_logging()
 
     config = TrainerConfig().load()
+    mlflow.set_tracking_uri(config.mlflow_tracking_uri)
     repo = MlflowRepository(config)
     dalle2 = repo.load_model(ModelType.DALLE2)
     image_data = infer(dalle2, input_text)

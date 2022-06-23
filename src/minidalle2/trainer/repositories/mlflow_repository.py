@@ -1,3 +1,4 @@
+import logging
 from contextlib import contextmanager
 
 import mlflow
@@ -11,11 +12,13 @@ from minidalle2.trainer.values.registered_model import (
 from minidalle2.trainer.values.trainer_config import TrainerConfig
 from minidalle2.values.config import ModelType, Stage
 
+_LOGGER = logging.getLogger(__name__)
+
 
 class MlflowRepository:
     def __init__(self, config: TrainerConfig):
         self.config = config
-        self.client = MlflowClient(config.MLFLOW_TRACKING_URI)
+        self.client = MlflowClient(config.mlflow_tracking_uri)
         self.active_run = None
         self.active_run_model_type = None
 
@@ -52,9 +55,8 @@ class MlflowRepository:
         if not latest_version:
             return None
 
-        run_id = latest_version.run_id
         tags = latest_version.tags
-        model = mlflow.pytorch.load_model(self.config.get_model_uri(run_id, model_type))
+        model = mlflow.pytorch.load_model(latest_version.source).to(self.config.device)
 
         return RegisteredModel(model=model, tags=tags)
 
@@ -62,6 +64,8 @@ class MlflowRepository:
         model_type = self.active_run_model_type
 
         registered_model_name = self.config.get_registered_model_name(model_type)
+
+        _LOGGER.debug(f"log_model %s %s", model_type.value, registered_model_name)
 
         mlflow.pytorch.log_model(
             model, model_type.value, registered_model_name=registered_model_name

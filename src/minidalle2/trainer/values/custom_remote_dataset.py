@@ -24,7 +24,9 @@ class CustomRemoteDataset(Dataset):
         rowid = index + 1
         data_url = self.config.get_data_url(rowid=rowid, dataset_type=self.dataset_type)
         response = requests.get(data_url).json()
-        image_url = self.config.get_image_url(rowid=rowid, dataset_type=self.dataset_type)
+        subreddit = response["subreddit"]
+        image_id = response["image_id"]
+        image_url = self.config.get_image_url(subreddit, image_id)
         local_image_path = self.config.get_image_path(response["subreddit"], response["image_id"])
 
         if not validate_image(local_image_path):

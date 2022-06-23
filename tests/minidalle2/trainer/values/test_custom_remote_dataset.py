@@ -31,7 +31,7 @@ class TestCustomDataset:
 
         try:
             web_server_process = subprocess.Popen(
-                f"DATASETS_PATH={server_config.DATASETS_PATH} uvicorn --port={server_port} --app-dir=src minidalle2.server.api.main:app",
+                f"DATASETS_PATH={server_config.datasets_path} uvicorn --port={server_port} --app-dir=src minidalle2.server.api.main:app",
                 shell=True,
                 preexec_fn=os.setsid,
             )
@@ -58,12 +58,12 @@ class TestCustomDataset:
 
     def test_len_and_getitem(self):
         server_config = ServerConfig()
-        server_config.DATASETS_PATH = "tests/fixtures/datasets"
+        server_config.datasets_path = "tests/fixtures/datasets"
 
         with TemporaryDirectory() as tmpdir, self.launch_web_server(server_config) as datasets_url:
             trainer_config = TrainerConfig()
-            trainer_config.DATASETS_URL = datasets_url
-            trainer_config.TMP_DATASETS_PATH = str(Path(tmpdir))
+            trainer_config.datasets_url = datasets_url
+            trainer_config.tmp_datasets_path = str(Path(tmpdir))
 
             dataset = CustomRemoteDataset(trainer_config, DatasetType.TRAIN)
 

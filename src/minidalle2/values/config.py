@@ -34,6 +34,10 @@ class Config:
     def datasets_path(self):
         raise NotImplementedError()
 
+    @datasets_path.setter
+    def datasets_path(self, v):
+        raise NotImplementedError()
+
     def get_image_path(self, subreddit, image_id) -> Path:
         assert self.datasets_path is not None
 

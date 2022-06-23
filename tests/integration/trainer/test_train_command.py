@@ -4,7 +4,7 @@ import minidalle2.trainer.commands.train_clip_command as train_clip_command
 
 
 class TestTrainCommand:
-    def test_train_command_no_steps(self):
+    def test_train_command_with_epochs(self):
         runner = CliRunner()
         result = runner.invoke(
             train_clip_command.execute,

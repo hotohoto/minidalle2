@@ -13,7 +13,7 @@ from minidalle2.values.config import ModelType
 class TestTmp:
     def test_save_and_load_clip(self):
         config = TrainerConfig().load()
-        mlflow.set_tracking_uri(config.MLFLOW_TRACKING_URI)
+        mlflow.set_tracking_uri(config.mlflow_tracking_uri)
 
         repo = MlflowRepository(config)
         with start_run(repo, ModelType.CLIP):

@@ -12,7 +12,7 @@ from minidalle2.values.trainer_config import TrainerConfig
 class Repository:
     def __init__(self, config: TrainerConfig, experiment_name: str):
         self.config = config
-        self.client = MlflowClient(config.MLFLOW_TRACKING_URI)
+        self.client = MlflowClient(config.mlflow_tracking_uri)
         self.experiment_id = self.client.create_experiment(experiment_name)
         self.run = self.client.create_run(self.experiment_id)
 

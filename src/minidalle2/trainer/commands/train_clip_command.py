@@ -1,4 +1,5 @@
 import click
+import mlflow
 
 from minidalle2.logging import init_logging
 from minidalle2.trainer.repositories.mlflow_repository import MlflowRepository
@@ -15,8 +16,9 @@ def execute(n_epochs, resume):
     init_logging()
 
     config = TrainerConfig().load()
-    if n_epochs:
+    if n_epochs is not None:
         config.n_epochs_clip = n_epochs
+    mlflow.set_tracking_uri(config.mlflow_tracking_uri)
 
     repo = MlflowRepository(config=config)
 
@@ -24,16 +26,17 @@ def execute(n_epochs, resume):
         registered_clip = repo.load_model(ModelType.CLIP)
         if not registered_clip:
             clip = build_clip(config)
-            n_steps_to_skip = 0
+            trained_steps = 0
         else:
             clip = registered_clip.model
-            n_steps_to_skip = registered_clip.trained_steps
+            trained_epochs = registered_clip.trained_epochs
+            trained_steps = registered_clip.trained_steps
 
     else:
         clip = build_clip(config)
-        n_steps_to_skip = 0
+        trained_steps = 0
 
-    train_clip(clip, config, repo, n_steps_to_skip=n_steps_to_skip)
+    train_clip(clip, config, repo, trained_epochs=trained_epochs, trained_steps=trained_steps)
 
     click.echo("Done.")
 

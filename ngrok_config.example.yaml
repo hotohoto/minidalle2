@@ -3,6 +3,8 @@ tunnels:
   mlflow-tracking-server:
     addr: 5000
     proto: http
+    inspect: false
   datasets:
     addr: 8000
     proto: http
+    inspect: false

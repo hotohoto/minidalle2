@@ -7,7 +7,7 @@ uvicorn --port=8000 --app-dir=src minidalle2.server.api.main:app &
 trap "exit" INT TERM
 trap "kill 0" EXIT
 
-mlflow server \
+GUNICORN_CMD_ARGS="--timeout 180" mlflow server \
 --backend-store-uri=sqlite:///mlflow.db \
 --artifacts-destination=./mlartifacts \
 --serve-artifacts

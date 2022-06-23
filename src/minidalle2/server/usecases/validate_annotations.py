@@ -6,7 +6,7 @@ from tqdm import tqdm
 
 from minidalle2.server.repositories.annotation_repository import AnnotationRepository
 from minidalle2.server.values.server_config import ServerConfig
-from minidalle2.usecases.validate_image import validate_image
+from minidalle2.utils.validate_image import validate_image
 from minidalle2.values.datasets import DownloadStatus
 
 _LOGGER = logging.getLogger(__name__)
@@ -17,7 +17,9 @@ def validate_annotations(
     annotation_repo: AnnotationRepository,
 ):
     # validate download_status and reset it if required
-    total_annotations_downloaded = annotation_repo.count_annotations_by_download_status(DownloadStatus.DONE)
+    total_annotations_downloaded = annotation_repo.count_annotations_by_download_status(
+        DownloadStatus.DONE
+    )
 
     limit = 500
     offset = 0

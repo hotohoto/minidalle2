@@ -21,5 +21,3 @@ else
     echo "GPU doesn't look available"
     pip install -r requirements_trainer.txt --extra-index-url https://download.pytorch.org/whl/cpu
 fi
-
-poetry run poe download_index
