@@ -1,0 +1,12 @@
+.*
+datasets
+mlartifacts
+tests
+tmp_datasets
+venv
+*.ipynb
+*.yaml
+*.md
+*.db
+**/__pycache__
+Dockerfile

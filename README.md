@@ -2,6 +2,7 @@
 
 ## TODO
 
+- debug to use GPU
 - try to apply pytorch lightening
 - Define an argument to download up to n images
 - validate annotations and mark them not to validate it again
@@ -20,11 +21,7 @@ poetry install
 ## Prepare datasets
 
 ```sh
-mkdir -p datasets
-cd datasets
-wget https://www.dropbox.com/s/cqtdpsl4hewlli1/redcaps_v1.0_annotations.zip
-unzip redcaps_v1.0_annotations.zip
-
+poe download_annotations  # download the annotations source
 poe import_annotations  # import annotations. this is recommended to finish this completely
 poe download_images  # download images as much as you want
 poe update_splits  # update the trainset index and the testset index to take account of the recently downloaded images

@@ -16,8 +16,8 @@ poetry --version
 pip install -U pip
 if nvidia-smi; then
     echo "GPU looks available"
-    pip install -r requirements_trainer.txt
+    pip install -r requirements.txt
 else
     echo "GPU doesn't look available"
-    pip install -r requirements_trainer.txt --extra-index-url https://download.pytorch.org/whl/cpu
+    pip install -r requirements.txt --extra-index-url https://download.pytorch.org/whl/cpu
 fi

@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: pvc-minidalle2-datasets-rwx
+spec:
+  storageClassName: standard-rwx  # uses Cloud Filestore API in GCP
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: 200Gi
