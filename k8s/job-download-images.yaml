@@ -4,17 +4,24 @@ metadata:
   name: download-images
 spec:
   backoffLimit: 0
-  completions: 10  # FIXME
-  parallelism: 10  # FIXME
+  completions: 5  # FIXME
+  parallelism: 5  # FIXME
   template:
     spec:
       containers:
       - name: image-downloader
-        image: hotohoto/minidalle2:0.1.0-cpu
-        command: ["venv/bin/poe", "download_images"]
+        image: hotohoto/minidalle2:0.1.1-cpu
+        # args: ["~/.poetry/bin/poetry", "run", "poe", "download_images"]
         volumeMounts:
         - name: vol
           mountPath: /home/worker/minidalle2/datasets
+        resources:
+          limits:
+            cpu: 500m
+            memory: 500Mi
+          requests:
+            cpu: 300m
+            memory: 500Mi
       restartPolicy: Never
       volumes:
       - name: vol

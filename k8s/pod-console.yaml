@@ -4,7 +4,7 @@ metadata:
   name: console
 spec:
   containers:
-  - image: hotohoto/minidalle2:0.1.0-cpu
+  - image: hotohoto/minidalle2:0.1.1-cpu
     name: console
     volumeMounts:
     - name: vol

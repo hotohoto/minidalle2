@@ -23,17 +23,20 @@ RUN sudo sh -c "$HOME/.poetry/bin/poetry completions bash > /etc/bash_completion
 RUN printf "\n. ~/.poetry/env\n" >> ~/.bashrc
 
 WORKDIR /home/worker/minidalle2
-RUN python -m venv venv
-RUN venv/bin/pip install --no-cache-dir -U pip
-RUN venv/bin/pip install --no-cache-dir wheel
+
+COPY --chown=worker:worker pyproject.toml .
+
+RUN ~/.poetry/bin/poetry run pip install --no-cache-dir -U pip
+RUN ~/.poetry/bin/poetry run pip install --no-cache-dir wheel
 
 COPY --chown=worker:worker requirements.txt .
 ARG OPT_PIP_EXTRA_INDEX_PYTORCH
 ENV OPT_PIP_EXTRA_INDEX_PYTORCH=$OPT_PIP_EXTRA_INDEX_PYTORCH
-RUN venv/bin/pip install --no-cache-dir -r requirements.txt $OPT_PIP_EXTRA_INDEX_PYTORCH
+RUN ~/.poetry/bin/poetry run pip install --no-cache-dir -r requirements.txt $OPT_PIP_EXTRA_INDEX_PYTORCH
 
-COPY --chown=worker:worker pyproject.toml .
-RUN sudo sh -c "$PWD/venv/bin/poe _bash_completion > /etc/bash_completion.d/poe.bash-completion"
+RUN ~/.poetry/bin/poetry run python -m poethepoet _bash_completion > poe.txt && \
+    sudo sh -c "cat poe.txt > /etc/bash_completion.d/poe.bash-completion" && \
+    rm poe.txt
 
 COPY --chown=worker:worker src src
 COPY --chown=worker:worker bin bin

@@ -6,7 +6,7 @@ packages = [
   {include = "minidalle2", from = "src"},
 ]
 readme = "README.md"
-version = "0.1.0"
+version = "0.1.1"
 
 [tool.poetry.dependencies]
 click = "^8.1.3"
@@ -39,7 +39,7 @@ build-backend = "poetry.core.masonry.api"
 requires = ["poetry-core>=1.0.0"]
 
 [tool.poe.env]
-IMAGE_TAG_VERSION="0.1.0"
+IMAGE_TAG_VERSION="0.1.1"
 
 [tool.poe.tasks]
 docker_build_cpu = "docker build --progress=plain --build-arg OPT_PIP_EXTRA_INDEX_PYTORCH='--extra-index-url https://download.pytorch.org/whl/cpu' -t hotohoto/minidalle2:${IMAGE_TAG_VERSION}-cpu ."
