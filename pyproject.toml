@@ -6,7 +6,7 @@ packages = [
   {include = "minidalle2", from = "src"},
 ]
 readme = "README.md"
-version = "0.1.1"
+version = "0.1.3"
 
 [tool.poetry.dependencies]
 click = "^8.1.3"
@@ -39,14 +39,14 @@ build-backend = "poetry.core.masonry.api"
 requires = ["poetry-core>=1.0.0"]
 
 [tool.poe.env]
-IMAGE_TAG_VERSION="0.1.1"
+IMAGE_TAG_VERSION="0.1.3"
 
 [tool.poe.tasks]
 docker_build_cpu = "docker build --progress=plain --build-arg OPT_PIP_EXTRA_INDEX_PYTORCH='--extra-index-url https://download.pytorch.org/whl/cpu' -t hotohoto/minidalle2:${IMAGE_TAG_VERSION}-cpu ."
 docker_build_gpu = "docker build --progress=plain -t hotohoto/minidalle2:${IMAGE_TAG_VERSION}-gpu ."
 docker_push_cpu = "docker image push hotohoto/minidalle2:${IMAGE_TAG_VERSION}-cpu"
 docker_push_gpu = "docker image push hotohoto/minidalle2:${IMAGE_TAG_VERSION}-gpu"
-donwload_annotations = "bin/download_annotations.sh"
+download_annotations = "bin/download_annotations.sh"
 download_images = {script="minidalle2.server.commands.download_images_command:execute"}
 format = "sh -c 'black . && isort src tests'"
 import_annotations = {script="minidalle2.server.commands.import_annotations_command:execute"}

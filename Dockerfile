@@ -6,8 +6,10 @@ RUN apt update && \
     apt upgrade && \
     apt install -qy \
     bash-completion \
+    curl \
     sudo \
-    curl
+    wget \
+    zip
 
 RUN mkdir /etc/bash_completion.d
 
@@ -34,10 +36,10 @@ ARG OPT_PIP_EXTRA_INDEX_PYTORCH
 ENV OPT_PIP_EXTRA_INDEX_PYTORCH=$OPT_PIP_EXTRA_INDEX_PYTORCH
 RUN ~/.poetry/bin/poetry run pip install --no-cache-dir -r requirements.txt $OPT_PIP_EXTRA_INDEX_PYTORCH
 
-RUN ~/.poetry/bin/poetry run python -m poethepoet _bash_completion > poe.txt && \
-    sudo sh -c "cat poe.txt > /etc/bash_completion.d/poe.bash-completion" && \
-    rm poe.txt
+RUN ~/.poetry/bin/poetry run python -m poethepoet _bash_completion | \
+    sudo sh -c "cat > /etc/bash_completion.d/poe.bash-completion"
 
 COPY --chown=worker:worker src src
 COPY --chown=worker:worker bin bin
+
 CMD ["tail", "-f", "/dev/null"]

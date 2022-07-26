@@ -16,3 +16,7 @@ def execute():
     validate_annotations(config=config, annotation_repo=repo)
 
     click.echo("Done.")
+
+
+if __name__ == "__main__":
+    execute()

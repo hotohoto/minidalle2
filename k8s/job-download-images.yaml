@@ -4,28 +4,23 @@ metadata:
   name: download-images
 spec:
   backoffLimit: 0
-  completions: 5  # FIXME
-  parallelism: 5  # FIXME
+  completions: 8
+  parallelism: 8
   template:
     spec:
       containers:
       - name: image-downloader
-        image: hotohoto/minidalle2:0.1.1-cpu
-        # args: ["~/.poetry/bin/poetry", "run", "poe", "download_images"]
+        image: hotohoto/minidalle2:0.1.3-cpu
+        args: ["sh", "-c", ". ~/.poetry/env; poetry run poe download_images"]
         volumeMounts:
         - name: vol
           mountPath: /home/worker/minidalle2/datasets
         resources:
-          limits:
-            cpu: 500m
-            memory: 500Mi
           requests:
-            cpu: 300m
-            memory: 500Mi
+            cpu: "500m"
+            memory: 512Mi
       restartPolicy: Never
       volumes:
       - name: vol
         persistentVolumeClaim:
-          claimName: pvc-minidalle2-datasets-rwx
-      securityContext:
-        fsGroup: 1000  # mount volumes with the group ID set
+          claimName: minidalle2-nfs-pvc

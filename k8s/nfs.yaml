@@ -1,0 +1,88 @@
+# https://github.com/kubernetes/examples/tree/master/staging/volumes/nfs
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: nfs-server
+  name: nfs-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nfs-server
+  template:
+    metadata:
+      labels:
+        app: nfs-server
+    spec:
+      containers:
+        - image: gcr.io/google_containers/volume-nfs:0.8
+          name: volume-nfs
+          volumeMounts:
+            - name: vol
+              mountPath: /exports
+          ports:
+            - name: nfs
+              containerPort: 2049
+            - name: mountd
+              containerPort: 20048
+            - name: rpcbind
+              containerPort: 111
+          resources:
+            limits:
+              cpu: 200m
+              memory: 1Gi
+            requests:
+              cpu: 100m
+              memory: 512Mi
+          securityContext:
+            privileged: true
+      volumes:
+        - name: vol
+          persistentVolumeClaim:
+            claimName: minidalle2-datasets-rwo
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nfs-service
+spec:
+  ports:
+    - name: nfs
+      port: 2049
+    - name: mountd
+      port: 20048
+    - name: rpcbind
+      port: 111
+  selector:
+    app: nfs-server
+
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: minidalle2-nfs-pv
+spec:
+  capacity:
+    storage: 200Gi
+  accessModes:
+    - ReadWriteMany
+  nfs:
+    server: nfs-service.default.svc.cluster.local
+    path: "/"
+  mountOptions:
+    - nfsvers=4.2
+
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: minidalle2-nfs-pvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: ""
+  resources:
+    requests:
+      storage: 200Gi

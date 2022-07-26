@@ -16,3 +16,7 @@ def execute(retry_failed=False):
     download_images(config=config, annotation_repo=repo, retry_failed=retry_failed)
 
     click.echo("Done.")
+
+
+if __name__ == "__main__":
+    execute()

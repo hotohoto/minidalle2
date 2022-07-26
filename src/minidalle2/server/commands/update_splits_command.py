@@ -16,3 +16,7 @@ def execute():
     update_splits(annotation_repo=repo)
 
     click.echo("Done.")
+
+
+if __name__ == "__main__":
+    execute()

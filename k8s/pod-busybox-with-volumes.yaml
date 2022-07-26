@@ -1,14 +1,15 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: console
+  name: busybox-with-volumes
 spec:
   containers:
-  - image: hotohoto/minidalle2:0.1.1-cpu
-    name: console
+  - image: busybox
+    name: busybox
+    args: ["tail", "-f", "/dev/null"]
     volumeMounts:
     - name: vol
-      mountPath: /home/worker/minidalle2/datasets
+      mountPath: /data
     resources:
       limits:
         cpu: 100m
@@ -19,6 +20,4 @@ spec:
   volumes:
   - name: vol
     persistentVolumeClaim:
-      claimName: pvc-minidalle2-datasets-rwx
-  securityContext:
-    fsGroup: 1000  # mount volumes with the group ID set
+      claimName: minidalle2-nfs-pvc
